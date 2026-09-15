@@ -1,0 +1,31 @@
+# Diese Dateien werden nach der GUI geladen, in der Reihenfolge, in der sie erscheinen
+# Erstellt von stepconf 1.1 am Mon Sep 14 22:23:48 2026
+# Änderungen an dieser Datei werden beim nächsten
+# wird überschrieben wenn Sie stepconf erneut ausführen
+# **** Setup der Spindel Geschwindigkeits-Anzeige mit pyvcp -START ****
+# **** Nutze COMMANDED Spindel Geschwindigkeit von LinuxCNC da kein Spindel Encoder spezifiziert ist
+
+#net spindle-cmd-rpm-abs    => pyvcp.spindle-speed
+
+# **** force spindle at speed indicator true because we have no feedback ****
+
+#net spindle-at-speed => pyvcp.spindle-at-speed-led
+#sets spindle-at-speed true
+
+
+#net x-torque-signed lcec.0.A6.motor-torque => pyvcp.x-load
+#net y-torque-signed lcec.0.A6.motor-torque => pyvcp.y-load
+#net z-torque-signed lcec.0.A6.motor-torque => pyvcp.z-load
+#net s-torque-signed lcec.0.A6.motor-torque => pyvcp.s-load
+
+
+#net vfd-temperature-s32 lcec.0.7.vfd-temperature => conv-s32-float.4.in
+#net vfd-temperature-floated conv-s32-float.4.out => pyvcp.vfd-temperature
+
+
+#net relay1 pyvcp.dout0 => lcec.0.6.dout-0
+#net relay2 pyvcp.dout1 => lcec.0.6.dout-1
+#net toolchange pyvcp.toolchange => lcec.0.6.dout-6 lcec.0.6.dout-7
+#net air-ok lcec.0.5.din-7 => pyvcp.air-ok
+
+#net spindle-rpm-fb-scaled  => pyvcp.spindle-rpm

@@ -1,41 +1,54 @@
-# Erstellt von PNCconf am Sun Feb  9 20:48:23 2025
-# Verwendete LinuxCNC version:  Master (2.9)
-# Änderungen an dieser Datei werden beim nächsten
-# wird überschrieben sobald Sie PNCconf erneut ausführen
+# -----------------------------
+# EtherCAT and Motion Config
+# -----------------------------
 
+# Load kinematics and motion modules
 loadrt [KINS]KINEMATICS
 loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS
 
-# EtherCat
+# Load EtherCAT configuration from XML
 loadusr -W lcec_conf ethercat-conf.xml
 
+# Load EtherCAT and CIA402 drivers
 loadrt lcec
 loadrt cia402 count=1
 
-addf	lcec.read-all			servo-thread
-addf	cia402.0.read-all       servo-thread
-addf	motion-command-handler  servo-thread
-addf	motion-controller       servo-thread
-addf	cia402.0.write-all      servo-thread
-addf	lcec.write-all			servo-thread
+# Add EtherCAT and motion processing functions to the servo thread
+addf    lcec.read-all            servo-thread
+addf    cia402.0.read-all        servo-thread
+addf    motion-command-handler   servo-thread
+addf    motion-controller        servo-thread
+addf    cia402.0.write-all       servo-thread
+addf    lcec.write-all           servo-thread
 
-
+# Enable EMC control
 setp iocontrol.0.emc-enable-in 1
 
-#*******************
+
+# -----------------------------
 # AXIS X Configuration
 # -----------------------------
 
 # Set CIA402 into Profile Position Mode
 setp cia402.0.csp-mode 1
 # pos-scale = (encoder counts per revolution) × (mechanical ratio) ÷ (units per revolution)
-setp cia402.0.pos-scale 13107.2
+# 17Bit -> 131072
+# 5mm/rev -> 26214
+setp cia402.0.pos-scale 26214
 
 # Motion signal mappings for axis X
 net x-enable      <= joint.0.amp-enable-out  => cia402.0.enable
 net x-amp-fault   => joint.0.amp-fault-in     <= cia402.0.drv-fault
 net x-pos-cmd     <= joint.0.motor-pos-cmd    => cia402.0.pos-cmd
 net x-pos-fb      => joint.0.motor-pos-fb     <= cia402.0.pos-fb
+
+net y-pos-cmd     <= joint.1.motor-pos-cmd    => joint.1.motor-pos-fb
+#net y-pos-fb      => joint.1.motor-pos-fb     <= joint.1.motor-pos-cmd
+
+net z-pos-cmd     <= joint.2.motor-pos-cmd    => joint.2.motor-pos-fb
+#net z-pos-fb      => joint.2.motor-pos-fb     <= joint.2.motor-pos-cmd
+
+
 
 # EtherCAT to CIA402 driver mapping
 net x-statusword      lcec.0.A6.status-word       => cia402.0.statusword
@@ -44,24 +57,10 @@ net x-drv-act-pos     lcec.0.A6.pos-actual        => cia402.0.drv-actual-positio
 # CIA402 driver to EtherCAT mapping
 net x-controlword         cia402.0.controlword            => lcec.0.A6.control-word
 net x-drv-target-pos      cia402.0.drv-target-position    => lcec.0.A6.target-position
-#  ---Notaus-Signale---
 
-net estop-out     <=  iocontrol.0.user-enable-out
-net estop-out     =>  iocontrol.0.emc-enable-in
-
-#  ---Signale zum manuellen Werkzeugwechsel---
-
-net tool-change-request    <= iocontrol.0.tool-change
-net tool-change-confirmed  => iocontrol.0.tool-changed
-net tool-number            <= iocontrol.0.tool-prep-number
-
-#  ---Nutze externen Dialog zum Werkzeugwechsel---
-
-loadusr -W hal_manualtoolchange
-net tool-change-request    =>  hal_manualtoolchange.change
-net tool-change-confirmed  <=  hal_manualtoolchange.changed
-net tool-number            =>  hal_manualtoolchange.number
-
-#  ---ignoriere Anfragen zu Werkzeug-Vorbereitungen---
-net tool-prepare-loopback   iocontrol.0.tool-prepare      =>  iocontrol.0.tool-prepared
-
+# Homing
+#setp lcec.0.A6.homing-method -2
+#net x-home-request joint.0.request-custom-homing => cia402.0.home
+#net x-homing joint.0.is-custom-homing <= cia402.0.stat-homing
+#net x-homed joint.0.custom-homing-finished <= cia402.0.stat-homed
+##net x-home-index <= joint.0.index-enable => cia402.0.home
