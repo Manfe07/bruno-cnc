@@ -26,6 +26,65 @@
                 </pdo>
             </syncManager>
         </slave>
+	
+
+		<!-- Position 1: EK1914 mit Ihrer exakten Product ID -->
+		<slave idx="1" type="generic" vid="0x00000002" pid="0x077a2c52" name="EK1914">
+		
+		<!-- Sync Manager 2: Ausgänge (Master -> Slave) -->
+		<syncManager idx="2" dir="out">
+			<!-- FSOE RxPDO-Map (Muss mitgeladen und aufgefüllt werden) -->
+			<pdo idx="0x1600">
+			<pdoEntry idx="0x7000" subIdx="0x01" bitLen="8" halType="complex"/>
+			<pdoEntry idx="0x7001" subIdx="0x01" bitLen="1" halType="complex"/>
+			<pdoEntry idx="0x7001" subIdx="0x02" bitLen="1" halType="complex"/>
+			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> <!-- Gap -->
+			<pdoEntry idx="0x7000" subIdx="0x03" bitLen="16" halType="complex"/>
+			<pdoEntry idx="0x7000" subIdx="0x02" bitLen="16" halType="complex"/>
+			</pdo>
+			
+			<!-- DIO RxPDO-Map Outputs -->
+			<pdo idx="0x1601">
+			<!-- Die 4 Standard-Ausgänge -->
+			<pdoEntry idx="0x7010" subIdx="0x01" bitLen="1" halPin="out-0" halType="bit"/>
+			<pdoEntry idx="0x7010" subIdx="0x02" bitLen="1" halPin="out-1" halType="bit"/>
+			<pdoEntry idx="0x7010" subIdx="0x03" bitLen="1" halPin="out-2" halType="bit"/>
+			<pdoEntry idx="0x7010" subIdx="0x04" bitLen="1" halPin="out-3" halType="bit"/>
+			<!-- Die 2 Safety Linked Outputs (Standard-Bits für die sicheren Ausgänge) -->
+			<pdoEntry idx="0x7010" subIdx="0x05" bitLen="1" halPin="std-to-safe-out-0" halType="bit"/>
+			<pdoEntry idx="0x7010" subIdx="0x06" bitLen="1" halPin="std-to-safe-out-1" halType="bit"/>
+			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="10" halType="complex"/> <!-- Gap -->
+			</pdo>
+		</syncManager>
+		
+		<!-- Sync Manager 3: Eingänge (Slave -> Master) -->
+		<syncManager idx="3" dir="in">
+			<!-- FSOE TxPDO-Map -->
+			<pdo idx="0x1a00">
+			<pdoEntry idx="0x6000" subIdx="0x01" bitLen="8" halType="complex"/>
+			<pdoEntry idx="0x6001" subIdx="0x01" bitLen="1" halType="complex"/>
+			<pdoEntry idx="0x6001" subIdx="0x02" bitLen="1" halType="complex"/>
+			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> <!-- Gap -->
+			<pdoEntry idx="0x6000" subIdx="0x03" bitLen="16" halType="complex"/>
+			<pdoEntry idx="0x6000" subIdx="0x02" bitLen="16" halType="complex"/>
+			</pdo>
+			
+			<!-- DIO TxPDO-Map Inputs -->
+			<pdo idx="0x1a01">
+			<!-- Die 4 Standard-Eingänge -->
+			<pdoEntry idx="0x6010" subIdx="0x01" bitLen="1" halPin="in-0" halType="bit"/>
+			<pdoEntry idx="0x6010" subIdx="0x02" bitLen="1" halPin="in-1" halType="bit"/>
+			<pdoEntry idx="0x6010" subIdx="0x03" bitLen="1" halPin="in-2" halType="bit"/>
+			<pdoEntry idx="0x6010" subIdx="0x04" bitLen="1" halPin="in-3" halType="bit"/>
+			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="12" halType="complex"/> <!-- Gap -->
+			</pdo>
+		</syncManager>
+		</slave>
+
+		<!-- Position 2: EL1004 (4x Digital In - Nativ unterstützt) -->
+		<slave idx="2" type="EL1004" name="EL1004"/>
+		<!-- Position 3: EL3162 (2x Analog In 0-10V - Nativ unterstützt) -->
+		<slave idx="3" type="EL3162" name="EL3162"/>
     </master>
 </masters>
 

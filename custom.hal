@@ -1,3 +1,5 @@
 # Benutzerdefinierte custom HAL-Anweisungen können hier eingefügt werden
 # Diese Datei wird nicht überschrieben wenn Sie stepconf erneut ausführen
 
+loadrt classicladder_rt
+addf classicladder.0.refresh servo-thread
