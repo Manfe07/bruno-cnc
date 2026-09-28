@@ -2,4 +2,19 @@
 # Diese Datei wird nicht überschrieben wenn Sie stepconf erneut ausführen
 
 loadrt classicladder_rt
+loadusr classicladder --nogui plc.clp
 addf classicladder.0.refresh servo-thread
+
+loadrt siggen
+net ampel-takt siggen.0.clock => classicladder.0.in-05
+setp siggen.0.frequency 1
+addf siggen.0.update servo-thread
+
+# Zuweisung Q10 -> Ampel Rot
+net Ampel-Rot lcec.0.EK1914.out-0 <= classicladder.0.out-10
+# Zuweisung Q10 -> Ampel Gelb
+net Ampel-Gelb lcec.0.EK1914.out-1 <= classicladder.0.out-11
+# Zuweisung Q10 -> Ampel Grün
+net Ampel-Gruen lcec.0.EK1914.out-2 <= classicladder.0.out-12
+# Zuweisung Q10 -> Ampel Horn
+net Ampel-Horn lcec.0.EK1914.out-3 <= classicladder.0.out-13
