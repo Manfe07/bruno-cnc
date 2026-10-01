@@ -1,20 +1,30 @@
 # Benutzerdefinierte custom HAL-Anweisungen können hier eingefügt werden
 # Diese Datei wird nicht überschrieben wenn Sie stepconf erneut ausführen
 
-loadrt classicladder_rt
-loadusr classicladder --nogui plc.clp
+loadrt classicladder_rt numBits=32 numPhysInputs=32 numPhysOutputs=32
+loadusr classicladder --nogui plc.clp 
 addf classicladder.0.refresh servo-thread
+
 
 loadrt siggen
 net ampel-takt siggen.0.clock => classicladder.0.in-05
 setp siggen.0.frequency 1
 addf siggen.0.update servo-thread
 
-# Zuweisung Q10 -> Ampel Rot
-net Ampel-Rot lcec.0.EK1914.out-0 <= classicladder.0.out-10
-# Zuweisung Q10 -> Ampel Gelb
-net Ampel-Gelb lcec.0.EK1914.out-1 <= classicladder.0.out-11
-# Zuweisung Q10 -> Ampel Grün
-net Ampel-Gruen lcec.0.EK1914.out-2 <= classicladder.0.out-12
-# Zuweisung Q10 -> Ampel Horn
-net Ampel-Horn lcec.0.EK1914.out-3 <= classicladder.0.out-13
+# Zuweisung Q10 bis Q14 -> Ampel
+net Ampel-Rot    classicladder.0.out-10 => lcec.0.EK1914.out-0
+net Ampel-Gelb   classicladder.0.out-11 => lcec.0.EK1914.out-1
+net Ampel-Gruen  classicladder.0.out-12 => lcec.0.EK1914.out-2
+net Ampel-Horn   classicladder.0.out-13 => lcec.0.EK1914.out-3
+
+
+# MIST COOLING
+net mist-gcode      iocontrol.0.coolant-mist => classicladder.0.in-20
+net mist-final-out  classicladder.0.out-20   => lcec.0.EL2809.dout-0
+
+# VACUUM EXTRACTION
+net vacuum-gcode     motion.digital-out-00   => classicladder.0.in-21
+net vacuum-final-out classicladder.0.out-21  => lcec.0.EL2809.dout-1
+
+
+

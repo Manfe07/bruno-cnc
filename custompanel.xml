@@ -1,8 +1,36 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <pyvcp>
-         <vbox>
-         <relief>RIDGE</relief>         
-         <bd>6</bd>
+	<labelframe text="Manual Controls">
+		<vbox>		
+			<hbox>
+				<led>
+					<halpin>"mist-state"</halpin>
+					<size>20</size>
+					<on_color>"green"</on_color>
+					<off_color>"gray"</off_color>
+				</led>
+				<button>
+					<text>"Mist Cooling (M7)"</text>
+					<halpin>"mist-toggle"</halpin>
+				</button>
+			</hbox>
+			<hbox>
+				<led>
+					<halpin>"vacuum-state"</halpin>
+					<size>20</size>
+					<on_color>"green"</on_color>
+					<off_color>"gray"</off_color>
+				</led>
+				<button>
+					<text>"Vacuum Cleaner"</text>
+					<halpin>"vacuum-toggle"</halpin>
+				</button>
+			</hbox>
+		</vbox>
+	</labelframe>
+	<vbox>
+		<relief>RIDGE</relief>         
+		<bd>6</bd>
 		<labelframe text="Servos">
 			<label>
 				<text>"X Axis Torque:"</text>

@@ -45,3 +45,36 @@ net s-torque-float conv-s32-float.3.out => pyvcp.s-torque
 #net air-ok lcec.0.5.din-7 => pyvcp.air-ok
 
 #net spindle-rpm-fb-scaled  => pyvcp.spindle-rpm
+
+
+
+
+
+
+# MIST COOLING
+net mist-gui       pyvcp.mist-toggle        => classicladder.0.in-30
+net mist-gui-out   classicladder.0.out-30   => pyvcp.mist-state
+
+# VACUUM EXTRACTION
+net vacuum-gui       pyvcp.vacuum-toggle     => classicladder.0.in-31
+net vacuum-gui-out   classicladder.0.out-31  => pyvcp.vacuum-state
+
+
+
+## Der PyVCP-Checkbutton simuliert einen normalerweise geschlossenen externen Notaus-Schalter.
+#net ext-estop classicladder.0.in-00 <= pyvcp.py-estop
+#
+## Anforderung der Notaus-Freigabe von LinuxCNC
+#net estop-all-ok iocontrol.0.emc-enable-in <= classicladder.0.out-00
+#
+## Anforderung der E-Stop-Freigabe von PyVCP oder einer externen Quelle
+#net ext-estop-reset classicladder.0.in-03 <= pyvcp.py-reset
+#
+## Diese Zeile setzt den Notaus von LinuxCNC zurück.
+#net emc-reset-estop iocontrol.0.user-request-enable => classicladder.0.in-02
+#
+## Diese Zeile ermöglicht es LinuxCNC, den Notausschalter in ClassicLadder zu entriegeln.
+#net emc-estop iocontrol.0.user-enable-out => classicladder.0.in-01
+#
+## Diese Zeile schaltet den grünen Indikator ein, wenn der E-Stop beendet ist.
+#net estop-all-ok => pyvcp.py-es-status
