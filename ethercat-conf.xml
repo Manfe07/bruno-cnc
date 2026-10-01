@@ -92,8 +92,10 @@
 
 		<!-- Position 2: EL1004 (4x Digital In - Nativ unterstützt) -->
 		<slave idx="2" type="EL1004" name="EL1004"/>
-		<!-- Position 3: EL3162 (2x Analog In 0-10V - Nativ unterstützt) -->
-		<slave idx="3" type="EL3162" name="EL3162"/>
+		<!-- Position 3: EL2809 (16x Digital Out - Nativ unterstützt) -->
+		<slave idx="3" type="EL2809" name="EL2809"/>
+		<!-- Position 4: EL3162 (2x Analog In 0-10V - Nativ unterstützt) -->
+		<slave idx="4" type="EL3162" name="EL3162"/>
     </master>
 </masters>
 
