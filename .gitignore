@@ -12,6 +12,10 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
-__pycache__/
-sample/
-trash/
+# LinuxCNC
+*.hal.old
+*autosave.halscope
+*.var.bak
+/trash
+/sample
+/__pycache__
