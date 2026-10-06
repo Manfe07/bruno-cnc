@@ -1,6 +1,69 @@
 <masters>
     <master idx="0" appTimePeriod="1000000" refClockSyncCycles="1">
-        <slave idx="0" type="generic" vid="00400000" pid="00000715" configPdos="true" name="A6">
+		<!-- Position 1: EK1914 mit Ihrer exakten Product ID -->
+		<slave idx="0" type="generic" vid="0x00000002" pid="0x077a2c52" name="EK1914">
+			<!-- Sync Manager 2: Ausgänge (Master -> Slave) -->
+			<syncManager idx="2" dir="out">
+				<!-- FSOE RxPDO-Map (Muss mitgeladen und aufgefüllt werden) -->
+				<pdo idx="0x1600">
+					<pdoEntry idx="0x7000" subIdx="0x01" bitLen="8" halType="complex"/>
+					<pdoEntry idx="0x7001" subIdx="0x01" bitLen="1" halType="complex"/>
+					<pdoEntry idx="0x7001" subIdx="0x02" bitLen="1" halType="complex"/>
+					<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> 
+					<!-- Gap -->
+					<pdoEntry idx="0x7000" subIdx="0x03" bitLen="16" halType="complex"/>
+					<pdoEntry idx="0x7000" subIdx="0x02" bitLen="16" halType="complex"/>
+				</pdo>
+				
+				<!-- DIO RxPDO-Map Outputs -->
+				<pdo idx="0x1601">
+				<!-- Die 4 Standard-Ausgänge -->
+					<pdoEntry idx="0x7010" subIdx="0x01" bitLen="1" halPin="out-0" halType="bit"/>
+					<pdoEntry idx="0x7010" subIdx="0x02" bitLen="1" halPin="out-1" halType="bit"/>
+					<pdoEntry idx="0x7010" subIdx="0x03" bitLen="1" halPin="out-2" halType="bit"/>
+					<pdoEntry idx="0x7010" subIdx="0x04" bitLen="1" halPin="out-3" halType="bit"/>
+					<!-- Die 2 Safety Linked Outputs (Standard-Bits für die sicheren Ausgänge) -->
+					<pdoEntry idx="0x7010" subIdx="0x05" bitLen="1" halPin="std-to-safe-out-0" halType="bit"/>
+					<pdoEntry idx="0x7010" subIdx="0x06" bitLen="1" halPin="std-to-safe-out-1" halType="bit"/>
+					<pdoEntry idx="0x0000" subIdx="0x00" bitLen="10" halType="complex"/>
+				</pdo>
+			</syncManager>
+			
+			<!-- Sync Manager 3: Eingänge (Slave -> Master) -->
+			<syncManager idx="3" dir="in">
+				<!-- FSOE TxPDO-Map -->
+				<pdo idx="0x1a00">
+					<pdoEntry idx="0x6000" subIdx="0x01" bitLen="8" halType="complex"/>
+					<pdoEntry idx="0x6001" subIdx="0x01" bitLen="1" halType="complex"/>
+					<pdoEntry idx="0x6001" subIdx="0x02" bitLen="1" halType="complex"/>
+					<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> <!-- Gap -->
+					<pdoEntry idx="0x6000" subIdx="0x03" bitLen="16" halType="complex"/>
+					<pdoEntry idx="0x6000" subIdx="0x02" bitLen="16" halType="complex"/>
+					<!-- Die 2 physikalischen TwinSAFE-Eingänge als HAL-Pins freischalten -->
+					<pdoEntry idx="0x6001" subIdx="0x01" bitLen="1" halPin="safe-in-0" halType="bit"/>
+					<pdoEntry idx="0x6001" subIdx="0x02" bitLen="1" halPin="safe-in-1" halType="bit"/>
+				</pdo>
+				
+				<!-- DIO TxPDO-Map Inputs -->
+				<pdo idx="0x1a01">
+					<!-- Die 4 Standard-Eingänge -->
+					<pdoEntry idx="0x6010" subIdx="0x01" bitLen="1" halPin="in-0" halType="bit"/>
+					<pdoEntry idx="0x6010" subIdx="0x02" bitLen="1" halPin="in-1" halType="bit"/>
+					<pdoEntry idx="0x6010" subIdx="0x03" bitLen="1" halPin="in-2" halType="bit"/>
+					<pdoEntry idx="0x6010" subIdx="0x04" bitLen="1" halPin="in-3" halType="bit"/>
+					<pdoEntry idx="0x0000" subIdx="0x00" bitLen="12" halType="complex"/> <!-- Gap -->
+				</pdo>
+			</syncManager>
+		</slave>
+
+		<!-- Position 2: EL1004 (4x Digital In - Nativ unterstützt) -->
+		<slave idx="1" type="EL1004" name="EL1004"/>
+		<!-- Position 3: EL2809 (16x Digital Out - Nativ unterstützt) -->
+		<slave idx="2" type="EL2809" name="EL2809"/>
+		<!-- Position 4: EL3162 (2x Analog In 0-10V - Nativ unterstützt) -->
+		<slave idx="3" type="EL3162" name="EL3162"/>
+
+		<slave idx="4" type="generic" vid="00400000" pid="00000715" configPdos="true" name="xServo">
             <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="25000"/>
             <watchdog divider="2498" intervals="1000"/>
             <syncManager idx="2" dir="out">
@@ -26,76 +89,60 @@
                 </pdo>
             </syncManager>
         </slave>
-	
 
-		<!-- Position 1: EK1914 mit Ihrer exakten Product ID -->
-		<slave idx="1" type="generic" vid="0x00000002" pid="0x077a2c52" name="EK1914">
-		
-		<!-- Sync Manager 2: Ausgänge (Master -> Slave) -->
-		<syncManager idx="2" dir="out">
-			<!-- FSOE RxPDO-Map (Muss mitgeladen und aufgefüllt werden) -->
-			<pdo idx="0x1600">
-			<pdoEntry idx="0x7000" subIdx="0x01" bitLen="8" halType="complex"/>
-			<pdoEntry idx="0x7001" subIdx="0x01" bitLen="1" halType="complex"/>
-			<pdoEntry idx="0x7001" subIdx="0x02" bitLen="1" halType="complex"/>
-			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> 
-			<!-- Gap -->
-			<pdoEntry idx="0x7000" subIdx="0x03" bitLen="16" halType="complex"/>
-			<pdoEntry idx="0x7000" subIdx="0x02" bitLen="16" halType="complex"/>
-			
-			</pdo>
-			
-			<!-- DIO RxPDO-Map Outputs -->
-			<pdo idx="0x1601">
-			<!-- Die 4 Standard-Ausgänge -->
-			<pdoEntry idx="0x7010" subIdx="0x01" bitLen="1" halPin="out-0" halType="bit"/>
-			<pdoEntry idx="0x7010" subIdx="0x02" bitLen="1" halPin="out-1" halType="bit"/>
-			<pdoEntry idx="0x7010" subIdx="0x03" bitLen="1" halPin="out-2" halType="bit"/>
-			<pdoEntry idx="0x7010" subIdx="0x04" bitLen="1" halPin="out-3" halType="bit"/>
-			<!-- Die 2 Safety Linked Outputs (Standard-Bits für die sicheren Ausgänge) -->
-			<pdoEntry idx="0x7010" subIdx="0x05" bitLen="1" halPin="std-to-safe-out-0" halType="bit"/>
-			<pdoEntry idx="0x7010" subIdx="0x06" bitLen="1" halPin="std-to-safe-out-1" halType="bit"/>
-			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="10" halType="complex"/>
-			</pdo>
-		</syncManager>
-		
-		<!-- Sync Manager 3: Eingänge (Slave -> Master) -->
-		<syncManager idx="3" dir="in">
-			<!-- FSOE TxPDO-Map -->
-			<pdo idx="0x1a00">
-			<pdoEntry idx="0x6000" subIdx="0x01" bitLen="8" halType="complex"/>
-			<pdoEntry idx="0x6001" subIdx="0x01" bitLen="1" halType="complex"/>
-			<pdoEntry idx="0x6001" subIdx="0x02" bitLen="1" halType="complex"/>
-			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="6" halType="complex"/> <!-- Gap -->
-			<pdoEntry idx="0x6000" subIdx="0x03" bitLen="16" halType="complex"/>
-			<pdoEntry idx="0x6000" subIdx="0x02" bitLen="16" halType="complex"/>
-		<!-- Die 2 physikalischen TwinSAFE-Eingänge als HAL-Pins freischalten -->
-          <pdoEntry idx="0x6001" subIdx="0x01" bitLen="1" halPin="safe-in-0" halType="bit"/>
-          <pdoEntry idx="0x6001" subIdx="0x02" bitLen="1" halPin="safe-in-1" halType="bit"/>
-          
+		<slave idx="5" type="generic" vid="00400000" pid="00000715" configPdos="true" name="yServo">
+            <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="25000"/>
+            <watchdog divider="2498" intervals="1000"/>
+            <syncManager idx="2" dir="out">
+                <pdo idx="1600">
+                    <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="control-word" halType="u32"/>
+                    <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
+                    <pdoEntry idx="6098" subIdx="00" bitLen="8" halPin="homing-method" halType="s32"/>    
+                    <pdoEntry idx="60B8" subIdx="00" bitLen="16" halPin="touch-probe-function" halType="u32"/>
+                </pdo>
+            </syncManager>
+            <syncManager idx="3" dir="in">
+                <pdo idx="1A00">
+                    <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="status-word" halType="u32"/>
+                    <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="pos-actual" halType="s32"/>
+                    <pdoEntry idx="60BA" subIdx="00" bitLen="32" halPin="touch-probe-1" halType="s32"/>
+                    <pdoEntry idx="60BC" subIdx="00" bitLen="32" halPin="touch-probe-2" halType="s32"/>
+                    <pdoEntry idx="60B9" subIdx="00" bitLen="16" halPin="touch-probe-status" halType="s32"/>
+                    <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="fault-code" halType="s32"/>
+                    <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="DI-status" halType="u32"/>
+                    <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="motor-torque" halType="s32"/>
+                    <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="velocity-actual" halType="s32"/>
+                    <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="follow-error" halType="s32"/>
+                </pdo>
+            </syncManager>
+        </slave>
 
-			</pdo>
-			
-			<!-- DIO TxPDO-Map Inputs -->
-			<pdo idx="0x1a01">
-			<!-- Die 4 Standard-Eingänge -->
-			<pdoEntry idx="0x6010" subIdx="0x01" bitLen="1" halPin="in-0" halType="bit"/>
-			<pdoEntry idx="0x6010" subIdx="0x02" bitLen="1" halPin="in-1" halType="bit"/>
-			<pdoEntry idx="0x6010" subIdx="0x03" bitLen="1" halPin="in-2" halType="bit"/>
-			<pdoEntry idx="0x6010" subIdx="0x04" bitLen="1" halPin="in-3" halType="bit"/>
-			<pdoEntry idx="0x0000" subIdx="0x00" bitLen="12" halType="complex"/> <!-- Gap -->
-			</pdo>
-          
-          
-		</syncManager>
-		</slave>
-
-		<!-- Position 2: EL1004 (4x Digital In - Nativ unterstützt) -->
-		<slave idx="2" type="EL1004" name="EL1004"/>
-		<!-- Position 3: EL2809 (16x Digital Out - Nativ unterstützt) -->
-		<slave idx="3" type="EL2809" name="EL2809"/>
-		<!-- Position 4: EL3162 (2x Analog In 0-10V - Nativ unterstützt) -->
-		<slave idx="4" type="EL3162" name="EL3162"/>
+		<slave idx="6" type="generic" vid="00400000" pid="00000715" configPdos="true" name="zServo">
+            <dcConf assignActivate="300" sync0Cycle="*1" sync0Shift="25000"/>
+            <watchdog divider="2498" intervals="1000"/>
+            <syncManager idx="2" dir="out">
+                <pdo idx="1600">
+                    <pdoEntry idx="6040" subIdx="00" bitLen="16" halPin="control-word" halType="u32"/>
+                    <pdoEntry idx="607A" subIdx="00" bitLen="32" halPin="target-position" halType="s32"/>
+                    <pdoEntry idx="6098" subIdx="00" bitLen="8" halPin="homing-method" halType="s32"/>    
+                    <pdoEntry idx="60B8" subIdx="00" bitLen="16" halPin="touch-probe-function" halType="u32"/>
+                </pdo>
+            </syncManager>
+            <syncManager idx="3" dir="in">
+                <pdo idx="1A00">
+                    <pdoEntry idx="6041" subIdx="00" bitLen="16" halPin="status-word" halType="u32"/>
+                    <pdoEntry idx="6064" subIdx="00" bitLen="32" halPin="pos-actual" halType="s32"/>
+                    <pdoEntry idx="60BA" subIdx="00" bitLen="32" halPin="touch-probe-1" halType="s32"/>
+                    <pdoEntry idx="60BC" subIdx="00" bitLen="32" halPin="touch-probe-2" halType="s32"/>
+                    <pdoEntry idx="60B9" subIdx="00" bitLen="16" halPin="touch-probe-status" halType="s32"/>
+                    <pdoEntry idx="603F" subIdx="00" bitLen="16" halPin="fault-code" halType="s32"/>
+                    <pdoEntry idx="60FD" subIdx="00" bitLen="32" halPin="DI-status" halType="u32"/>
+                    <pdoEntry idx="6077" subIdx="00" bitLen="16" halPin="motor-torque" halType="s32"/>
+                    <pdoEntry idx="606C" subIdx="00" bitLen="32" halPin="velocity-actual" halType="s32"/>
+                    <pdoEntry idx="60F4" subIdx="00" bitLen="32" halPin="follow-error" halType="s32"/>
+                </pdo>
+            </syncManager>
+        </slave>
     </master>
 </masters>
 

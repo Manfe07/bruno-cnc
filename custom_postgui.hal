@@ -19,9 +19,9 @@ addf conv-s32-float.3 servo-thread
 #sets spindle-at-speed true
 
 
-net x-torque-abs lcec.0.A6.motor-torque => abs-s32.0.in
-#net y-torque-abs lcec.0.A6.motor-torque => abs-s32.1.in
-#net z-torque-abs lcec.0.A6.motor-torque => abs-s32.2.in
+net x-torque-abs lcec.0.xServo.motor-torque => abs-s32.0.in
+net y-torque-abs lcec.0.yServo.motor-torque => abs-s32.1.in
+net z-torque-abs lcec.0.zServo.motor-torque => abs-s32.2.in
 #net s-torque-abs lcec.0.A6.motor-torque => abs-s32.3.in
 
 net x-torque-signed abs-s32.0.out => conv-s32-float.0.in
