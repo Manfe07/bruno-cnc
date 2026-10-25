@@ -16,9 +16,13 @@ loadrt cia402 count=3
 # Add EtherCAT and motion processing functions to the servo thread
 addf    lcec.read-all            servo-thread
 addf    cia402.0.read-all        servo-thread
+addf    cia402.1.read-all        servo-thread
+addf    cia402.2.read-all        servo-thread
 addf    motion-command-handler   servo-thread
 addf    motion-controller        servo-thread
 addf    cia402.0.write-all       servo-thread
+addf    cia402.1.write-all       servo-thread
+addf    cia402.2.write-all       servo-thread
 addf    lcec.write-all           servo-thread
 
 # Enable EMC control
@@ -38,8 +42,14 @@ setp cia402.2.csp-mode 1
 # 17Bit -> 131072
 # 5mm/rev -> 26214
 setp cia402.0.pos-scale 26214
-setp cia402.1.pos-scale 26214
+setp cia402.1.pos-scale -26214
 setp cia402.2.pos-scale 26214
+
+
+# #net x-pos-cmd     <= joint.0.motor-pos-cmd    => joint.0.motor-pos-fb
+# #net y-pos-cmd     <= joint.1.motor-pos-cmd    => joint.1.motor-pos-fb
+# #net z-pos-cmd     <= joint.2.motor-pos-cmd    => joint.2.motor-pos-fb
+
 
 # Motion signal mappings for axis X
 net x-enable      <= joint.0.amp-enable-out   => cia402.0.enable
@@ -80,6 +90,34 @@ net y-drv-target-pos      cia402.1.drv-target-position    => lcec.0.yServo.targe
 
 net z-controlword         cia402.2.controlword            => lcec.0.zServo.control-word
 net z-drv-target-pos      cia402.2.drv-target-position    => lcec.0.zServo.target-position
+
+
+
+## Z-Brake
+net z-enable => lcec.0.EL2809.dout-4
+
+## Tool Probe
+net probe-in => motion.probe-input <= lcec.0.EL1004.din-2-not
+
+## Home/LimitSwitch
+loadrt not count=3
+
+addf not.0 servo-thread
+addf not.1 servo-thread
+addf not.2 servo-thread
+
+net limit-x-raw <= lcec.0.EK1914.in-1 => not.0.in
+net limit-y-raw <= lcec.0.EK1914.in-2 => not.1.in
+net limit-z-raw <= lcec.0.EK1914.in-3 => not.2.in
+
+#net X-home not.0.out => joint.0.home-sw-in
+#net Y-home not.1.out => joint.1.home-sw-in
+#net Z-home not.2.out => joint.2.home-sw-in
+
+net X-home not.0.out => joint.0.home-sw-in joint.0.neg-lim-sw-in
+net Y-home not.1.out => joint.1.home-sw-in joint.1.pos-lim-sw-in
+net Z-home not.2.out => joint.2.home-sw-in joint.2.pos-lim-sw-in
+
 
 
 # Homing

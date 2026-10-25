@@ -1,0 +1,36 @@
+loadrt conv_s32_float count=3
+loadrt abs_s32 count=3
+
+addf abs-s32.0 servo-thread
+addf abs-s32.1 servo-thread
+addf abs-s32.2 servo-thread
+addf conv-s32-float.0 servo-thread
+addf conv-s32-float.1 servo-thread
+addf conv-s32-float.2 servo-thread
+addf scale.6 servo-thread
+addf scale.7 servo-thread
+addf scale.8 servo-thread
+
+#net spindle-cmd-rpm-abs    => pyvcp.spindle-speed
+
+# **** force spindle at speed indicator true because we have no feedback ****
+
+#net spindle-at-speed => pyvcp.spindle-at-speed-led
+#sets spindle-at-speed true
+
+scale.6.gain = 0.1
+scale.7.gain = 0.1
+scale.8.gain = 0.1
+
+net x-torque-abs lcec.0.xServo.motor-torque => abs-s32.0.in
+net y-torque-abs lcec.0.yServo.motor-torque => abs-s32.1.in
+net z-torque-abs lcec.0.zServo.motor-torque => abs-s32.2.in
+
+net x-torque-unsigned abs-s32.0.out => conv-s32-float.0.in
+net y-torque-unsigned abs-s32.1.out => conv-s32-float.1.in
+net z-torque-unsigned abs-s32.2.out => conv-s32-float.2.in
+
+net x-torque-float conv-s32-float.0.out scale.6.in
+net y-torque-float conv-s32-float.1.out scale.7.in
+net z-torque-float conv-s32-float.2.out scale.8.in
+

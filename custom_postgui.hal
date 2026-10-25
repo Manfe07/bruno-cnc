@@ -1,39 +1,7 @@
-loadrt conv_s32_float count=4
-loadrt abs_s32 count=4
-
-addf abs-s32.0 servo-thread
-addf abs-s32.1 servo-thread
-addf abs-s32.2 servo-thread
-addf abs-s32.3 servo-thread
-
-addf conv-s32-float.0 servo-thread
-addf conv-s32-float.1 servo-thread
-addf conv-s32-float.2 servo-thread
-addf conv-s32-float.3 servo-thread
-
-#net spindle-cmd-rpm-abs    => pyvcp.spindle-speed
-
-# **** force spindle at speed indicator true because we have no feedback ****
-
-#net spindle-at-speed => pyvcp.spindle-at-speed-led
-#sets spindle-at-speed true
-
-
-net x-torque-abs lcec.0.xServo.motor-torque => abs-s32.0.in
-net y-torque-abs lcec.0.yServo.motor-torque => abs-s32.1.in
-net z-torque-abs lcec.0.zServo.motor-torque => abs-s32.2.in
-#net s-torque-abs lcec.0.A6.motor-torque => abs-s32.3.in
-
-net x-torque-signed abs-s32.0.out => conv-s32-float.0.in
-net y-torque-signed abs-s32.1.out => conv-s32-float.1.in
-net z-torque-signed abs-s32.2.out => conv-s32-float.2.in
-net s-torque-signed abs-s32.3.out => conv-s32-float.3.in
-
-net x-torque-float conv-s32-float.0.out => pyvcp.x-torque
-net y-torque-float conv-s32-float.1.out => pyvcp.y-torque
-net z-torque-float conv-s32-float.2.out => pyvcp.z-torque
-net s-torque-float conv-s32-float.3.out => pyvcp.s-torque
-
+# SERVO
+net x-torque-scaled scale.6.out => pyvcp.x-torque
+net y-torque-scaled scale.7.out => pyvcp.y-torque
+net z-torque-scaled scale.8.out => pyvcp.z-torque
 
 #net vfd-temperature-s32 lcec.0.7.vfd-temperature => conv-s32-float.4.in
 #net vfd-temperature-floated conv-s32-float.4.out => pyvcp.vfd-temperature
@@ -44,7 +12,12 @@ net s-torque-float conv-s32-float.3.out => pyvcp.s-torque
 #net toolchange pyvcp.toolchange => lcec.0.6.dout-6 lcec.0.6.dout-7
 #net air-ok lcec.0.5.din-7 => pyvcp.air-ok
 
-#net spindle-rpm-fb-scaled  => pyvcp.spindle-rpm
+
+# SPINDEL DATA
+net vfd-rpm-actual  => pyvcp.spindle-rpm
+net vfd-voltage     => pyvcp.spindle-voltage
+net vfd-current     => pyvcp.spindle-current
+net vfd-power       => pyvcp.spindle-power
 
 
 
@@ -58,23 +31,3 @@ net mist-gui-out   classicladder.0.out-30   => pyvcp.mist-state
 # VACUUM EXTRACTION
 net vacuum-gui       pyvcp.vacuum-toggle     => classicladder.0.in-31
 net vacuum-gui-out   classicladder.0.out-31  => pyvcp.vacuum-state
-
-
-
-## Der PyVCP-Checkbutton simuliert einen normalerweise geschlossenen externen Notaus-Schalter.
-#net ext-estop classicladder.0.in-00 <= pyvcp.py-estop
-#
-## Anforderung der Notaus-Freigabe von LinuxCNC
-#net estop-all-ok iocontrol.0.emc-enable-in <= classicladder.0.out-00
-#
-## Anforderung der E-Stop-Freigabe von PyVCP oder einer externen Quelle
-#net ext-estop-reset classicladder.0.in-03 <= pyvcp.py-reset
-#
-## Diese Zeile setzt den Notaus von LinuxCNC zurück.
-#net emc-reset-estop iocontrol.0.user-request-enable => classicladder.0.in-02
-#
-## Diese Zeile ermöglicht es LinuxCNC, den Notausschalter in ClassicLadder zu entriegeln.
-#net emc-estop iocontrol.0.user-enable-out => classicladder.0.in-01
-#
-## Diese Zeile schaltet den grünen Indikator ein, wenn der E-Stop beendet ist.
-#net estop-all-ok => pyvcp.py-es-status

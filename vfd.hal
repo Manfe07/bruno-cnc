@@ -1,0 +1,57 @@
+loadusr -W mb2hal config=vfd.ini
+loadrt scale count=9
+loadrt conv_float_s32 count=1
+loadrt mult2 count=1
+
+addf    scale.0             servo-thread
+addf    scale.1             servo-thread
+addf    scale.2             servo-thread
+addf    scale.3             servo-thread
+addf    scale.4             servo-thread
+addf    scale.5             servo-thread
+addf    conv-float-s32.0    servo-thread
+addf    mult2.0             servo-thread
+
+##### Spindel Speed Data #####
+# 24000rmp / 400Hz -> 60rmp/Hz
+# 60rmp/Hz / 10 (decimal point shifting) -> 6
+# 1 / 6 = 0.166667
+scale.0.gain = 0.166667
+scale.1.gain = 6
+
+net vfd-rpm-target      spindle.0.speed-out-abs => scale.0.in
+net vfd-rpm-target-int  scale.0.out             => conv-float-s32.0.in
+net vfd-rpm-target-raw  conv-float-s32.0.out    => mb2hal.Speed.00.int
+
+net vfd-rpm-acutal-raw  mb2hal.Status1.00.float => scale.1.in
+net vfd-rpm-actual      scale.1.out             => spindle.0.speed-in
+#net vfd-rpm-actual      scale.1.out
+
+
+##### VFD Temperature #####
+scale.2.gain = 0.1
+net vfd-temp-raw        mb2hal.Status2.02.float => scale.2.in
+net vfd-temp            scale.2.out 
+
+##### VFD Current #####
+scale.3.gain = 0.01
+net vfd-current-raw     mb2hal.Status1.02.float => scale.3.in
+net vfd-current         scale.3.out             => mult2.0.in0 
+
+##### VFD Voltage #####
+scale.4.gain = 0.1
+net vfd-voltage-raw     mb2hal.Status2.01.float => scale.4.in
+net vfd-voltage         scale.4.out             => mult2.0.in1
+
+##### VFD Power #####
+#net mult2.0.in0        vfd-voltage
+#net mult2.0.in1        vfd-current
+net vfd-power           mult2.0.out
+
+
+#net spindle-on      <= spindle.0.forward      => vfd_run_mux.sel
+#net vfd-target-val  <= vfd_dir_mux.out   => vfd_run_mux.in1
+#setp vfd_run_mux.in0 0
+
+# 3. Das fertige Steuerwort an mb2hal übergeben
+#net vfd-final-cmd   <= vfd_run_mux.out   => mb2hal.Control.00.float
