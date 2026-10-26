@@ -1,2 +1,5 @@
-T1  P1  X0  Y0  Z50  D6  ;Angelegt 20261007
-T2  P0  Z30  D20  ;Angelegt 20261009
+T10  P0   D+25.400000 Z+0.075333 ;Planfräser
+T20  P0   D+3.175000 Z+10.000000 ;Schaftfräser
+T30  P0   D+3.000000 Z+14.000000 ;Gravurfräser 45°
+T31  P0   D+3.175000 Z+20.000000 ;Gravurfräser 22.5°
+T0   P0   ;Dummy Tool

@@ -1,0 +1,38 @@
+net tool-change iocontrol.0.tool-change => hal_manualtoolchange.change
+net tool-changed iocontrol.0.tool-changed <= hal_manualtoolchange.changed
+net tool-number iocontrol.0.tool-prep-number => hal_manualtoolchange.number
+net tool-prepare-loopback iocontrol.0.tool-prepare => iocontrol.0.tool-prepared
+
+# SERVO
+#net x-torque-scaled scale.6.out => pyvcp.x-torque
+#net y-torque-scaled scale.7.out => pyvcp.y-torque
+#net z-torque-scaled scale.8.out => pyvcp.z-torque
+
+#net vfd-temperature-s32 lcec.0.7.vfd-temperature => conv-s32-float.4.in
+#net vfd-temperature-floated conv-s32-float.4.out => pyvcp.vfd-temperature
+
+
+#net relay1 pyvcp.dout0 => lcec.0.6.dout-0
+#net relay2 pyvcp.dout1 => lcec.0.6.dout-1
+#net toolchange pyvcp.toolchange => lcec.0.6.dout-6 lcec.0.6.dout-7
+#net air-ok lcec.0.5.din-7 => pyvcp.air-ok
+
+
+## SPINDEL DATA
+#net vfd-rpm-actual  => pyvcp.spindle-rpm
+#net vfd-voltage     => pyvcp.spindle-voltage
+#net vfd-current     => pyvcp.spindle-current
+#net vfd-power       => pyvcp.spindle-power
+
+
+
+
+
+
+# MIST COOLING
+net mist-gui       pyvcp.mist-toggle        => classicladder.0.in-30
+net mist-gui-out   classicladder.0.out-30   => pyvcp.mist-state
+
+# VACUUM EXTRACTION
+net vacuum-gui       pyvcp.vacuum-toggle     => classicladder.0.in-31
+net vacuum-gui-out   classicladder.0.out-31  => pyvcp.vacuum-state

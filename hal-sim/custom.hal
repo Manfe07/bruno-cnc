@@ -1,0 +1,53 @@
+# Benutzerdefinierte custom HAL-Anweisungen können hier eingefügt werden
+# Diese Datei wird nicht überschrieben wenn Sie stepconf erneut ausführen
+
+loadusr -W hal_manualtoolchange
+
+loadrt classicladder_rt numBits=32 numPhysInputs=32 numPhysOutputs=32
+loadusr classicladder --nogui plc.clp 
+addf classicladder.0.refresh servo-thread
+
+
+
+# Blink Takt
+loadrt siggen
+setp siggen.0.frequency 1
+addf siggen.0.update servo-thread
+net ampel-takt siggen.0.clock => classicladder.0.in-00
+
+
+# Hal-UI
+net machine.is-on       halui.machine.is-on      => classicladder.0.in-01
+net pdnt.program.is-idle     halui.program.is-idle    => classicladder.0.in-02
+net pdnt.program-is-running  halui.program.is-running => classicladder.0.in-03
+net pdnt.program.is-paused   halui.program.is-paused  => classicladder.0.in-04
+#net pdnt.program.run     classicladder.0.out-01   => halui.program.run
+#net pdnt.program.pause   classicladder.0.out-02   => halui.program.pause
+#net pdnt.program.resume  classicladder.0.out-03   => halui.program.resume
+#net pdnt.program.step    classicladder.0.out-04   => halui.program.step
+#net pdnt.program.stop    classicladder.0.out-05   => halui.program.stop
+
+
+# Spindelsteuerung
+net spindel-forward    spindle.0.forward    => lcec.0.EK1914.out-0
+net spindel-reverse    spindle.0.reverse    => lcec.0.EK1914.out-1
+net spindel-at-speed   lcec.0.EK1914.in-0   => spindle.0.at-speed
+ 
+
+# LED-Taster
+net Taster-Rot    classicladder.0.out-15 => lcec.0.EL2809.dout-0
+net Taster-Gruen  classicladder.0.out-16 => lcec.0.EL2809.dout-1
+net Taster-NO     lcec.0.EL1004.din-0    => classicladder.0.in-15
+net Taster-NC     lcec.0.EL1004.din-1    => classicladder.0.in-16
+
+
+# MIST COOLING
+net mist-gcode      iocontrol.0.coolant-mist => classicladder.0.in-20
+net mist-final-out  classicladder.0.out-20   => lcec.0.EL2809.dout-8
+
+
+# VACUUM EXTRACTION
+net vacuum-gcode     iocontrol.0.coolant-flood   => classicladder.0.in-21
+net vacuum-final-out classicladder.0.out-21  => lcec.0.EL2809.dout-9
+
+

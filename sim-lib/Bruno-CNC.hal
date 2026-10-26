@@ -1,0 +1,54 @@
+# -----------------------------
+# EtherCAT and Motion Config
+# -----------------------------
+
+# Load kinematics and motion modules
+loadrt [KINS]KINEMATICS
+loadrt [EMCMOT]EMCMOT servo_period_nsec=[EMCMOT]SERVO_PERIOD num_joints=[KINS]JOINTS
+addf    motion-command-handler   servo-thread
+addf    motion-controller        servo-thread
+
+# Enable EMC control
+setp iocontrol.0.emc-enable-in 1
+
+net x-pos-cmd     <= joint.0.motor-pos-cmd    => joint.0.motor-pos-fb
+net y-pos-cmd     <= joint.1.motor-pos-cmd    => joint.1.motor-pos-fb
+net z-pos-cmd     <= joint.2.motor-pos-cmd    => joint.2.motor-pos-fb
+
+
+loadrt comp names=comp_x_probe,comp_y_probe,comp_z_probe 
+loadrt sum2 names=sum_z_probe_pos
+loadrt siggen names=sig_random
+loadrt and2 count=2
+
+addf comp_x_probe servo-thread
+addf comp_y_probe servo-thread
+addf comp_z_probe servo-thread
+addf sum_z_probe_pos servo-thread
+addf sig_random.update servo-thread
+addf and2.0 servo-thread
+addf and2.1 servo-thread
+
+
+
+setp sig_random.frequency 1
+
+setp sum_z_probe_pos.in0 -70
+net z-probe-pos-random  sum_z_probe_pos.in1 => sig_random.sine
+
+net z-probe-real        joint.2.pos-fb      => comp_z_probe.in0
+net z-probe-pos         sum_z_probe_pos.out => comp_z_probe.in1
+
+net x-probe-pos         joint.0.pos-fb      => comp_x_probe.in0
+setp                    comp_x_probe.in1    -180.000
+net y-probe-pos         joint.1.pos-fb      => comp_y_probe.in1
+setp                    comp_y_probe.in0     210.000
+
+net probe-and_x         comp_x_probe.out    =>  and2.0.in0
+net probe-and_y         comp_y_probe.out    =>  and2.0.in1
+net probe-and_xy        and2.0.out          =>  and2.1.in0
+net probe-and_z         comp_z_probe.out    =>  and2.1.in1
+
+
+# net probe-in          motion.probe-input  <= lcec.0.EL1004.din-2-not
+net probe-in            motion.probe-input  <= and2.1.out

@@ -1,7 +1,7 @@
 # SERVO
-net x-torque-scaled scale.6.out => pyvcp.x-torque
-net y-torque-scaled scale.7.out => pyvcp.y-torque
-net z-torque-scaled scale.8.out => pyvcp.z-torque
+#net x-torque-scaled scale.6.out => pyvcp.x-torque
+#net y-torque-scaled scale.7.out => pyvcp.y-torque
+#net z-torque-scaled scale.8.out => pyvcp.z-torque
 
 #net vfd-temperature-s32 lcec.0.7.vfd-temperature => conv-s32-float.4.in
 #net vfd-temperature-floated conv-s32-float.4.out => pyvcp.vfd-temperature
@@ -15,9 +15,9 @@ net z-torque-scaled scale.8.out => pyvcp.z-torque
 
 # SPINDEL DATA
 net vfd-rpm-actual  => pyvcp.spindle-rpm
-net vfd-voltage     => pyvcp.spindle-voltage
-net vfd-current     => pyvcp.spindle-current
-net vfd-power       => pyvcp.spindle-power
+#net vfd-voltage     => pyvcp.spindle-voltage
+#net vfd-current     => pyvcp.spindle-current
+#net vfd-power       => pyvcp.spindle-power
 
 
 

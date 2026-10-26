@@ -1,0 +1,53 @@
+O<change> sub
+
+(--- KONFIGURATION ---)
+#<wls_x> = -184.116
+#<wls_y> = 217.508
+#<sichere_z> = 0.0          (Maschinen-Z ganz oben)
+#<such_weg_z> = -150.0      (Wie tief darf er maximal zum Tasten fahren)
+#<sensor_hoehe> = 65.770    (Abstand von WLS-Schaltpunkt zu Anschlag-Z0)
+#<vorschub_schnell> = 300
+#<vorschub_langsam> = 30
+
+(--- START DES WECHSELS ---)
+G90                         (Absolutmodus)
+G53 G0 Z[#<sichere_z>]      (Z ganz nach oben fahren)
+
+(Fahre zur manuellen Wechselposition)
+G53 G0 X0.0 Y0.0
+
+(--- MANUELLER WECHSEL-HALT ---)
+(MSG, Bitte Werkzeug wechseln! Danach auf Fortsetzen / Zyklus-Start druecken.)
+M1                          (Programmstopp fuer Werkzeugwechsel)
+
+(--- NEUES WERKZEUG VERMESSEN ---)
+(1. Schnelle Anfahrt ueber den Taster)
+G53 G0 X[#<wls_x>] Y[#<wls_y>]
+
+(2. Schneller Tastvorgang)
+G38.2 Z[#<such_weg_z>] F[#<vorschub_schnell>]
+
+
+;G91          ; Schaltet auf relative/inkrementelle Positionierung um
+;G1 Z2        ; Bewegt die Z-Achse um +20mm nach oben (F1000 bestimmt die Geschwindigkeit)
+;G90          ; Schaltet zurück auf absolute Positionierung (Standard für die meisten Drucker/Fräsen)
+
+(3. Kurz freifahren - Jetzt absolut konform fuer den Interpreter)
+G53 G0 Z[#5063 + 2.0]
+
+(4. Langsamer, praeziser Tastvorgang fuer exakten Messwert)
+G38.2 Z[#<such_weg_z>] F[#<vorschub_langsam>]
+
+(--- BERECHNUNG & ABSOLUTEN OFFSET SETZEN ---)
+G43.1 Z[#5063 - #<sensor_hoehe>]
+G43                         (Aktiviert den berechneten Offset im System)
+
+G10 L20 P0 Z[#<sensor_hoehe>]
+
+
+
+(--- ABSCHLUSS ---)
+G53 G0 Z[#<sichere_z>]      (Z wieder sicher nach oben fahren)
+
+O<change> endsub
+M2

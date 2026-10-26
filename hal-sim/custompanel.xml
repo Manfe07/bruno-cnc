@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pyvcp>
+	<labelframe text="Manual Controls">
+		<vbox>		
+			<hbox>
+				<led>
+					<halpin>"mist-state"</halpin>
+					<size>20</size>
+					<on_color>"green"</on_color>
+					<off_color>"gray"</off_color>
+				</led>
+				<button>
+					<text>"Mist Cooling (M7)"</text>
+					<halpin>"mist-toggle"</halpin>
+				</button>
+			</hbox>
+			<hbox>
+				<led>
+					<halpin>"vacuum-state"</halpin>
+					<size>20</size>
+					<on_color>"green"</on_color>
+					<off_color>"gray"</off_color>
+				</led>
+				<button>
+					<text>"Vacuum Cleaner"</text>
+					<halpin>"vacuum-toggle"</halpin>
+				</button>
+			</hbox>
+		</vbox>
+	</labelframe>
+	<vbox>
+		<relief>RIDGE</relief>         
+		<bd>6</bd>
+		<labelframe text="Servos">
+			<label>
+				<text>"X-Achse Last [%]:"</text>
+			</label>
+			<bar>
+				<halpin>"x-torque"</halpin>
+				<max_>100</max_>
+			</bar>
+			<label>
+				<text>"Y-Achse Last [%]:"</text>
+			</label>
+			<bar>
+				<halpin>"y-torque"</halpin>
+				<max_>100</max_>
+			</bar>
+			<label>
+				<text>"Z-Achse Last [%]:"</text>
+			</label>
+			<bar>
+				<halpin>"z-torque"</halpin>
+				<max_>100</max_>
+			</bar>
+		</labelframe>
+		<labelframe text="Spindle">
+			<label>
+				<text>"Drehzahl [1/min]:"</text>
+			</label>
+			<bar>
+				<halpin>"spindle-rpm"</halpin>
+				<max_>24000</max_>
+			</bar>
+			<label>
+				<text>"Spannung [V]:"</text>
+			</label>
+			<bar>
+				<halpin>"spindle-voltage"</halpin>
+				<max_>250</max_>
+			</bar>
+			<label>
+				<text>"Strom [A]:"</text>
+			</label>
+			<bar>
+				<halpin>"spindle-current"</halpin>
+				<max_>7.8</max_>
+			</bar>
+			<label>
+				<text>"Leistung [W]:"</text>
+			</label>
+			<bar>
+				<halpin>"spindle-power"</halpin>
+				<max_>2200</max_>
+			</bar>
+		</labelframe>
+        </vbox>
+</pyvcp>
